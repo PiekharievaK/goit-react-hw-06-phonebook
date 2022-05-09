@@ -1,16 +1,26 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Report, Confirm } from 'notiflix';
+import { Report } from 'notiflix';
 import s from './NewContactForm.module.css';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { add } from 'redux/store';
 
 function ContactForm(props) {
-  const [state, setState] = useState({ name: '', number: '' });
+  const dispatch = useDispatch();
+  const [state, setState] = useState({name: '', number: ''});
+
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    const { name } = state;
     const names = props.contactsArr;
+
+    const shortid = require('shortid');
+    const name = e.target.elements.name.value;
+    const number = e.target.elements.number.value;
+
+  
+    const contactInfo = { id: shortid(), name: name, number: number };
 
     if (names.includes(name.toLowerCase())) {
       Report.warning(
@@ -23,41 +33,21 @@ function ContactForm(props) {
       );
       return;
     }
+    dispatch(add(contactInfo));
 
-    if (state.number.length < 7 || state.number.length > 12) {
-      Confirm.show(
-        'Unknown phone number format',
-        'Are you sure you want to keep it?',
-        'Yes',
-        'No',
-        () => {
-          // При подтверждении
-          props.Submit(e);
-          reset();
-        },
-        () => {
-          // при отказе
-          return;
-        }
-      );
-      return;
-    }
-    props.Submit(e);
-
-    reset();
+   reset();
   };
+
+  const reset = () => {
+    state.name ='';
+    state.number ='';
+  };
+
 
   const handleChange = e => {
     const key = e.target.name;
     const value = e.target.value;
     setState(prevState => ({ ...prevState, [key]: value }));
-  };
-
-  const reset = () => {
-    setState({
-      name: '',
-      number: '',
-    });
   };
 
   return (
@@ -71,9 +61,9 @@ function ContactForm(props) {
           onChange={handleChange}
           value={state.name}
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          placeholder="Enter name"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
-          placeholder="Enter name"
         />
       </label>
       <label className={s.label}>

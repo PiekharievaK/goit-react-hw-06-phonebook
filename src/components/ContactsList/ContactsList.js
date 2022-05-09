@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 
+
 import s from './ContactsList.module.css';
 
-function ContactsList({ data, deleteFoo, ChangeFoo }) {
+function ContactsList({ data, deleteFoo}) {
+
+
   return (
     <ul className={s.list}>
       {data.map(element => {
@@ -13,13 +16,10 @@ function ContactsList({ data, deleteFoo, ChangeFoo }) {
               <span className={s.number}> {optimizePhone(element.number)}</span>
             </span>
             <span className={s.buttonsBox}>
-              <button id={element.id} className={s.button} onClick={deleteFoo}>
+              <button id={element.id} className={s.button} onClick={()=>deleteFoo(element.id)}>
                 Delete
               </button>{' '}
-              <button id={element.id} className={s.button} onClick={ChangeFoo}>
-                Change
-              </button>
-            </span>
+              </span>
           </li>
         );
       })}

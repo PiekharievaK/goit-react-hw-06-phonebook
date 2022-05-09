@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import s from './ContactsFilter.module.css';
+
+
 function Filter({ value, changeFilter }) {
   return (
     <label className={s.label}>
